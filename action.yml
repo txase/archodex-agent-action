@@ -1,0 +1,7 @@
+name: Archodex Agent
+description: Reports information about this workflow to Archodex
+runs:
+  using: node20
+  pre: pre.mjs
+  main: main.mjs
+  post: post.mjs
