@@ -3,8 +3,22 @@ import {execFileSync} from 'node:child_process';
 
 const STARTUP_TIMEOUT = 5;
 
+const SHELL_QUOTE_RE = /[\s$'"#><|;{}()*?&~]/;
+
 function exec(file, args, opts) {
-    core.info(`\u001b[38;2;68;147;248m${file} ${args.join(' ')}\u001b[0m`);
+    let log = `\u001b[38;2;68;147;248m${file}`;
+
+    for (let arg of args) {
+        if (arg.match(SHELL_QUOTE_RE)) {
+            log += ` '${arg}'`;
+        } else {
+            log += ` ${arg}`;
+        }
+    }
+
+    log += '\u001b[0m';
+
+    core.info(log);
 
     return execFileSync(file, args, opts);
 }
@@ -14,7 +28,7 @@ core.startGroup('Starting archodex-agent container');
 exec('docker',
      [
          'run', '--name', 'archodex-agent', '--detach', '--pid', 'host',
-         '--privileged', '--rm', 'ghcr.io/txase/archodex-agent-ebpf'
+         '--privileged', 'ghcr.io/txase/archodex-agent-ebpf'
      ],
      {stdio : 'inherit'});
 
