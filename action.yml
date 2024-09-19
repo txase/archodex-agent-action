@@ -1,5 +1,9 @@
 name: Archodex Agent
 description: Reports information about this workflow to Archodex
+inputs:
+  rules:
+    description: Archodex rule sets
+    required: true
 runs:
   using: node20
   pre: pre.mjs

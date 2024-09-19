@@ -1,5 +1,8 @@
 import * as core from '@actions/core';
 import {execFileSync} from 'node:child_process';
+import {rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 
 const SHELL_QUOTE_RE = /[\s$'"#><|;{}()*?&~]/;
 
@@ -26,3 +29,6 @@ exec('docker', [ 'stop', 'archodex-agent' ], {stdio : 'inherit'});
 exec('docker', [ 'logs', '--details', 'archodex-agent' ], {stdio : 'inherit'});
 
 exec('docker', [ 'rm', 'archodex-agent' ], {stdio : 'inherit'});
+
+let rulesDir = join(tmpdir(), 'archodex-rules');
+rmSync(rulesDir, {recursive : true});
