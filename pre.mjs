@@ -55,7 +55,7 @@ core.startGroup('Starting archodex-agent container');
 exec('docker',
      [
          'run', '--name', 'archodex-agent', '--detach', '--pid', 'host',
-         '--privileged', '--mount',
+         '--privileged', '--env', 'RUST_LOG', '--mount',
          `type=bind,source=${rulesDir},target=/config/rules`,
          'ghcr.io/txase/archodex-agent-ebpf'
      ],
