@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import {execFileSync} from 'node:child_process';
-import {mkdirSync, writeFileSync} from 'node:fs';
+import {mkdirSync, rmSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import YAML from 'yaml';
@@ -52,14 +52,19 @@ core.endGroup();
 
 core.startGroup('Starting archodex-agent container');
 
+const envVarFile = join(tmpdir(), "archodex-env-vars");
+writeFileSync(envVarFile, Object.keys(process.env).join("\n"));
+
 exec('docker',
      [
          'run', '--name', 'archodex-agent', '--detach', '--pid', 'host',
-         '--privileged', '--env', 'RUST_LOG', '--mount',
+         '--privileged', '--env-file', envVarFile, '--mount',
          `type=bind,source=${configsDir},target=/config`,
          'ghcr.io/txase/archodex-agent-ebpf'
      ],
      {stdio : 'inherit'});
+
+rmSync(envVarFile);
 
 exec('docker',
      [
