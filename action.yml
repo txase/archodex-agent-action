@@ -1,8 +1,8 @@
 name: Archodex Agent
 description: Reports information about this workflow to Archodex
 inputs:
-  rules:
-    description: Archodex rule sets
+  configs:
+    description: Archodex configs
     required: true
 runs:
   using: node20

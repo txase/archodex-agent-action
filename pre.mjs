@@ -27,22 +27,22 @@ function exec(file, args, opts) {
     return execFileSync(file, args, opts);
 }
 
-core.startGroup('Generating rules configuration files');
+core.startGroup('Generating Archodex configuration files');
 
-let rulesYaml = core.getInput('rules', {required : true});
+let configsYaml = core.getInput('configs', {required : true});
 
 let ruleSets;
 try {
-    ruleSets = YAML.parse(rulesYaml);
+    ruleSets = YAML.parse(configsYaml);
 } catch (err) {
-    throw new Error(`Failed to parse 'rules' action input: ${err}`);
+    throw new Error(`Failed to parse 'configs' action input: ${err}`);
 }
 
-let rulesDir = join(tmpdir(), 'archodex-rules');
-mkdirSync(rulesDir);
+let configsDir = join(tmpdir(), 'archodex-configs');
+mkdirSync(configsDir);
 
 for (const [name, ruleSet] of Object.entries(ruleSets)) {
-    let ruleSetPath = join(rulesDir, `${name}.yaml`);
+    let ruleSetPath = join(configsDir, `${name}.yaml`);
 
     writeFileSync(ruleSetPath, YAML.stringify(ruleSet));
     core.info(`Wrote ${ruleSetPath}`);
@@ -56,7 +56,7 @@ exec('docker',
      [
          'run', '--name', 'archodex-agent', '--detach', '--pid', 'host',
          '--privileged', '--env', 'RUST_LOG', '--mount',
-         `type=bind,source=${rulesDir},target=/config/rules`,
+         `type=bind,source=${configsDir},target=/config`,
          'ghcr.io/txase/archodex-agent-ebpf'
      ],
      {stdio : 'inherit'});

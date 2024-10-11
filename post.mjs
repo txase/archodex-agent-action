@@ -30,5 +30,5 @@ exec('docker', [ 'logs', '--details', 'archodex-agent' ], {stdio : 'inherit'});
 
 exec('docker', [ 'rm', 'archodex-agent' ], {stdio : 'inherit'});
 
-let rulesDir = join(tmpdir(), 'archodex-rules');
-rmSync(rulesDir, {recursive : true});
+let configsDir = join(tmpdir(), 'archodex-configs');
+rmSync(configsDir, {recursive : true});
