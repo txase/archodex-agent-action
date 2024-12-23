@@ -30,7 +30,10 @@ function exec(file, args, opts) {
 const reportApiKey = core.getInput('report-api-key');
 const logReport = core.getInput('log-report') === 'true' || !reportApiKey;
 
-const env = {...process.env};
+const env = {
+    ...process.env,
+    CLICOLOR_FORCE : 'true',
+};
 
 if (reportApiKey) {
     env.ARCHODEX_REPORT_API_KEY = reportApiKey;
