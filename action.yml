@@ -1,8 +1,12 @@
 name: Archodex Agent
 description: Reports information about this workflow to Archodex
 inputs:
+  report_api_key:
+    description: Archodex report API key. Reports will not be sent to the Archodex service if this input is not set.
+  log_report:
+    description: Set to 'true' to Log the Archodex resources and actions report. This defaults to 'true' if the report_api_key input is not set, and to 'false' otherwise.
   configs:
-    description: Archodex configs
+    description: Archodex configs.
     required: true
 runs:
   using: node20

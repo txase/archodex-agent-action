@@ -27,6 +27,36 @@ function exec(file, args, opts) {
     return execFileSync(file, args, opts);
 }
 
+const reportApiKey = core.getInput('report-api-key');
+const logReport = core.getInput('log-report') === 'true' || !reportApiKey;
+
+const env = {...process.env};
+
+if (reportApiKey) {
+    env.ARCHODEX_REPORT_API_KEY = reportApiKey;
+
+    core.info(
+        'report_api_key input value provided, will send report to Archodex service');
+
+    if (logReport) {
+        env.ARCHODEX_LOG_REPORT = 'true';
+
+        core.info(
+            "log_report input value is 'true', will also log the report at the end of the workflow");
+    }
+} else {
+    core.info(
+        'report_api_key input value not provided, will not send report to Archodex service');
+    if (logReport) {
+        core.info('Will log the report at the end of the workflow');
+    } else {
+        env.ARCHODEX_LOG_REPORT = 'false';
+
+        core.warn(
+            'report_api_key input value not provided and log_report input value set to non-true value, Archodex report will not be sent to the Archodex service nor logged at the end of the workflow');
+    }
+}
+
 core.startGroup('Generating Archodex configuration files');
 
 let configsYaml = core.getInput('configs', {required : true});
@@ -53,7 +83,7 @@ core.endGroup();
 core.startGroup('Starting archodex-agent container');
 
 const envVarFile = join(tmpdir(), "archodex-env-vars");
-writeFileSync(envVarFile, Object.keys(process.env).join("\n"));
+writeFileSync(envVarFile, Object.keys(env).join("\n"));
 
 exec('docker',
      [
@@ -62,7 +92,7 @@ exec('docker',
          `type=bind,source=${configsDir},target=/config`,
          'ghcr.io/txase/archodex-agent-ebpf'
      ],
-     {stdio : 'inherit'});
+     {env, stdio : 'inherit'});
 
 rmSync(envVarFile);
 
