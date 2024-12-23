@@ -89,7 +89,7 @@ exec('docker',
      [
          'run', '--name', 'archodex-agent', '--detach', '--pid', 'host',
          '--privileged', '--env-file', envVarFile, '--mount',
-         `type=bind,source=${configsDir},target=/config`,
+         `type=bind,source=${configsDir},target=/config/rules`,
          'ghcr.io/txase/archodex-agent-ebpf'
      ],
      {env, stdio : 'inherit'});
