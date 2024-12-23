@@ -27,8 +27,8 @@ function exec(file, args, opts) {
     return execFileSync(file, args, opts);
 }
 
-const reportApiKey = core.getInput('report-api-key');
-const logReport = core.getInput('log-report') === 'true' || !reportApiKey;
+const reportApiKey = core.getInput('report_api_key');
+const logReport = core.getInput('log_report') === 'true' || !reportApiKey;
 
 const env = {
     ...process.env,
